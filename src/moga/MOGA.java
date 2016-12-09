@@ -5,10 +5,8 @@
  */
 package moga;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  *
@@ -18,32 +16,6 @@ public class MOGA {
 
     //Obtaining Node, Adjacent Node, and Link Information
     public MOGA() {
-
-    }
-
-    public void getNode() {
-
-    }
-
-    public void getAdjNode() {
-
-    }
-
-    public void getLink() {
-
-    }
-
-    //Setting Departure and Destination Point
-    public void setDeparture() {
-
-    }
-
-    public void setDestination() {
-
-    }
-
-    //Initialize Population
-    public void initPop() {
 
     }
 
@@ -79,6 +51,8 @@ public class MOGA {
     public void termination() {
 
     }
+
+    
 
     public static void main(String[] args) {
         MOGA moga = new MOGA();
@@ -129,12 +103,14 @@ public class MOGA {
         Adj_Node Adj_Node_15 = new Adj_Node(Nodes[9], Nodes[10], Link_info[0]);
         AdjNodes.add(Adj_Node_15);
 
-        int pop_size = 3;
+        Adj_Node_15.getLink().getDistance();
+
+        int pop_size = 1;
         Individual[] individual = new Individual[pop_size];
         Node Departure = Nodes[1];
         Node Destination = Nodes[10];
-        Population pop = new Population(pop_size);
-        individual = pop.generatePopulation(pop_size, Departure, Destination, AdjNodes);
+        Population pop = new Population(pop_size, AdjNodes);
+        individual = pop.generatePopulation(Departure, Destination);
         for (int i = 0; i < individual.length; i++) {
             System.out.print(individual[i].getDeparture().getId() + " - ");
             for (int j = 0; j < individual[i].getViaNode().size(); j++) {
@@ -142,13 +118,26 @@ public class MOGA {
             }
             System.out.println(individual[i].getDestination().getId());
             System.out.println("Size = " + individual[i].getLength());
+            System.out.println("Distance = " + pop.getDistance(individual[i]));
+            System.out.println("Evacuation Time = " + pop.getEvacuationTime(individual[i]));
         }
+        
+        //Get Link Information
+        /*
+        System.out.println(pop.getLinkInfo(Nodes[1], Nodes[2], AdjNodes, "Distance"));
+        System.out.println(pop.getLinkInfo(Nodes[1], Nodes[2], AdjNodes, "Walking Speed"));
+        System.out.println(pop.getLinkInfo(Nodes[1], Nodes[2], AdjNodes, "Safety"));
+        System.out.println(pop.getLinkInfo(Nodes[1], Nodes[2], AdjNodes, "Pedestrian Traffic"));
+        */ 
         //get nodes in individual
-//        for (int i = 0; i < individual.length; i++) {
-//            for (int j = 0; j < individual[i].getLength(); j++) {
-//                System.out.print(individual[i].getNodes().get(j).getId() + " - ");                
-//            }
-//            System.out.println("===========");
-//        }
+        /*
+        for (int i = 0; i < individual.length; i++) {
+            for (int j = 0; j < individual[i].getLength(); j++) {
+                System.out.print(individual[i].getNodes().get(j).getId() + " - ");                
+            }
+            System.out.println("===========");
+        }
+        */
+
     }
 }

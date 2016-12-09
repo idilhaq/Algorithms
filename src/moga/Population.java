@@ -14,12 +14,15 @@ import java.util.Random;
  * @author idilhaq
  */
 public class Population {
-    private final int size;
 
-    public Population(int size) {
-        this.size = size;
+    private final int pop_size;
+    private final List<Adj_Node> AdjNodes;
+
+    public Population(int pop_size, List<Adj_Node> AdjNodes) {
+        this.pop_size = pop_size;
+        this.AdjNodes = AdjNodes;
     }
-    
+
     public List<Node> getNeighbors(Node node, List<Adj_Node> adjNode) {
         List<Node> listAdjNode = new ArrayList<>();
         for (int i = 0; i < adjNode.size(); i++) {
@@ -60,10 +63,10 @@ public class Population {
         path.remove(0);
         return path;
     }
-    
-    public Individual[] generatePopulation(int pop_size, Node Departure, Node Destination, List<Adj_Node> AdjNodes){
+
+    public Individual[] generatePopulation(Node Departure, Node Destination) {
         Individual[] ind = new Individual[pop_size];
-        for (int i = 0; i < pop_size; i++){
+        for (int i = 0; i < pop_size; i++) {
             List<Node> viaNode = generateIndividual(Departure, Destination, AdjNodes);
             ind[i] = new Individual(Departure, viaNode, Destination);
         }
@@ -74,6 +77,51 @@ public class Population {
      * @return the size
      */
     public int getSize() {
-        return size;
+        return pop_size;
+    }
+
+    public double getDistance(Individual individual) {
+        individual.getNodes();
+        double distance = 0;
+        for (int i = 0; i < (individual.getLength() - 1); i++) {
+            distance += getLinkInfo(individual.getNodes().get(i), individual.getNodes().get(i + 1), AdjNodes, "Distance");
+        }
+        return distance;
+    }
+
+    public double getEvacuationTime(Individual individual) {
+        individual.getNodes();
+        double evac_time = 0;
+        for (int i = 0; i < (individual.getLength() - 1); i++) {
+            double distance = getLinkInfo(individual.getNodes().get(i), individual.getNodes().get(i + 1), AdjNodes, "Distance");
+            double walking_speed = getLinkInfo(individual.getNodes().get(i), individual.getNodes().get(i + 1), AdjNodes, "Walking Speed");
+            evac_time += distance / walking_speed;
+        }
+        return evac_time;
+    }
+
+    public double getLinkInfo(Node Start, Node End, List<Adj_Node> adjNode, String info) {
+        double value = 0;
+        for (int i = 0; i < adjNode.size(); i++) {
+            if (adjNode.get(i).getStart().equals(Start) && adjNode.get(i).getEnd().equals(End)) {
+                switch (info) {
+                    case "Distance":
+                        value = adjNode.get(i).getLink().getDistance();
+                        break;
+                    case "Walking Speed":
+                        value = adjNode.get(i).getLink().getAvg_walking_speed();
+                        break;
+                    case "Safety":
+                        value = adjNode.get(i).getLink().getCurr_safety();
+                        break;
+                    case "Pedestrian Traffic":
+                        value = adjNode.get(i).getLink().getPedestrian_traffic();
+                        break;
+                    default:
+                        System.out.println("Error! Choose the correct options!");
+                }
+            }
+        }
+        return value;
     }
 }
